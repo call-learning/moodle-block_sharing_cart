@@ -48,7 +48,9 @@ class block_sharing_cart extends block_base {
         return array(
                 'all' => false,
                 'course' => true,
-                'site' => true
+                'site' => true,
+                // RESOURCE LIBRARY INTEGRATION: add new type of page to be displayed onto.
+                'resource-library-activities' => true
         );
     }
 
@@ -76,9 +78,11 @@ class block_sharing_cart extends block_base {
             return $this->content;
         }
 
-        if (!$this->page->user_is_editing() || !has_capability('moodle/backup:backupactivity', $context)) {
+        // RESOURCE LIBRARY INTEGRATION: allow the block in non editing mode.
+        if (!has_capability('moodle/backup:backupactivity', $context)) {
             return $this->content = '';
         }
+        // END-RESOURCE LIBRARY INTEGRATION: allow the block in non editing mode.
 
         $controller = new controller();
         $html = $controller->render_tree($USER->id);
@@ -101,7 +105,12 @@ class block_sharing_cart extends block_base {
             $this->page->requires->css('/blocks/sharing_cart/custom.css');
         }
         $this->page->requires->jquery();
-		$this->page->requires->js_call_amd('block_sharing_cart/script', 'init', ['add_method' => get_config('block_sharing_cart', 'add_to_sharing_cart')]);
+
+        // RESOURCE LIBRARY INTEGRATION: check if user is editing or not.
+        $this->page->requires->js_call_amd('block_sharing_cart/script', 'init',
+            array($this->page->user_is_editing()));
+        // END: RESOURCE LIBRARY INTEGRATION: check if user is editing or not.
+
         $this->page->requires->strings_for_js(
             ['yes', 'no', 'ok', 'cancel', 'error', 'edit', 'move', 'delete', 'movehere'],
             'moodle'

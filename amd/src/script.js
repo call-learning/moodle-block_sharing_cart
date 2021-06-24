@@ -23,8 +23,8 @@
 
 define(['jquery', 'core/modal_factory', 'core/modal_events'], function($, ModalFactory, ModalEvents) {
     return {
+        /* RESOURCE LIBRARY INTEGRATION: check if user is editing before add restore icon. */
         init: function(addMethod) {
-
             $(document).ready(function() {
                 let isDragging = false;
 
@@ -193,45 +193,56 @@ define(['jquery', 'core/modal_factory', 'core/modal_events'], function($, ModalF
                     });
                 }
 
+                /* RESOURCE LIBRARY INTEGRATION: check if user is editing before add restore icon. */
                 /** @var {Object}  The icon configurations */
                 var icon = {
                     // Actions
                     'backup': {
                         css: 'editing_backup',
                         iconClass: 'fa fa-frown-o',
+                        mustEdit: false,
                     },
                     'movedir': {
                         css: 'editing_right',
                         iconClass: 'fa fa-arrow-right',
+                        mustEdit: false,
                     },
                     'move': {
                         css: 'editing_move_',
                         iconClass: 'fa fa-arrows-v',
+                        mustEdit: false,
                     },
                     'edit': {
                         css: 'editing_update',
                         iconClass: 'fa fa-pencil',
+                        mustEdit: false,
                     },
                     'cancel': {
                         css: 'editing_cancel',
                         iconClass: 'fa fa-ban',
+                        mustEdit: false,
                     },
                     'delete': {
                         css: 'editing_update',
                         iconClass: 'fa fa-trash',
+                        mustEdit: false,
                     },
                     'restore': {
                         css: 'editing_restore',
                         iconClass: 'fa fa-clone',
+                        mustEdit: true,
                     },
                     // Directories
                     'dir-open': {
-                        iconClass: 'fa fa-folder-open-o'
+                        iconClass: 'fa fa-folder-open-o',
+                        mustEdit: false,
                     },
                     'dir-closed': {
-                        iconClass: 'fa fa-folder-o'
+                        iconClass: 'fa fa-folder-o',
+                        mustEdit: false,
                     },
                 };
+                /* END - RESOURCE LIBRARY INTEGRATION: check if user is editing before add restore icon. */
 
                 /** @var {Node}  The Sharing Cart block container node */
                 var $block = $('.block_sharing_cart');
@@ -1063,13 +1074,16 @@ define(['jquery', 'core/modal_factory', 'core/modal_events'], function($, ModalF
                     function add_actions(item, actions) {
                         var $item = $(item);
                         var $commands = $item.find('.commands').first();
-
                         $.each(actions, function(index, action) {
-                            var $command = create_command(action);
-                            $command.on('click', function(e) {
-                                $['on_' + action](e);
-                            });
-                            $commands.append($command);
+                            /* RESOURCE LIBRARY INTEGRATION: check if user is editing before add restore icon. */
+                            if (!icon[action].mustEdit || isuserediting) {
+                                var $command = create_command(action);
+                                $command.on('click', function (e) {
+                                    $['on_' + action](e);
+                                });
+                                $commands.append($command);
+                            }
+                            /* END-RESOURCE LIBRARY INTEGRATION: check if user is editing before add restore icon. */
                         }, this);
                     }
 
