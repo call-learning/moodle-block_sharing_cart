@@ -1176,7 +1176,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events'], function($, ModalF
                         var activityClass = $activity[0].className;
 
                         // Selecting modtype without prefix.
-                        var modtype = activityClass.substr(activityClass.indexOf('modtype_') + 8);
+                        var modtype = activityClass.substr(activityClass.indexOf('modtype_') + 8).trim();
 
                         // Default activity name.
                         var activityName = str('activity_string');
@@ -1186,6 +1186,10 @@ define(['jquery', 'core/modal_factory', 'core/modal_events'], function($, ModalF
                             activityName = $('.activity#' + $activity[0].id)
                                 .find('.mod-indent-outer .activityinstance span.instancename')
                                 .html();
+                        } else {
+                            activityName = $('.activity#' + $activity[0].id)
+                                .find('.mod-indent-outer .contentwithoutlink')
+                                .html();
                         }
 
                         var $backupIcon = create_backup_icon();
@@ -1194,10 +1198,13 @@ define(['jquery', 'core/modal_factory', 'core/modal_events'], function($, ModalF
                             $.on_backup(e, activityName);
                         });
 
-                        var $actionMenuItem = $activity.find('.action-menu.section-cm-edit-actions').parent('.actions');
+                        var $actionMenuItem = $activity.find('.action-menu.section-cm-edit-actions,'
+                            + ' .activity .activityinstance').parent('.actions');
 
-                        if (!$actionMenuItem.find('.add-to-sharing-cart').length) {
-                            $actionMenuItem.append($backupIcon);
+                        $actionMenuItem.append($backupIcon);
+                        if ($actionMenuItem.length === 0) {
+                            $('.activity#' + $activity[0].id)
+                                .find('.activityinstance .aalink, .contentwithoutlink').append($backupIcon);
                         }
                     }
 
@@ -1218,6 +1225,9 @@ define(['jquery', 'core/modal_factory', 'core/modal_events'], function($, ModalF
                         // course format (since this format doesn't have an action menu)
                         if (isFlexibleCourseFormat && (typeof sectionId === 'undefined' || sectionId === null)) {
                             sectionId = $section.data('section-id');
+                        }
+                        if ((typeof sectionId === 'undefined' || sectionId === null)) {
+                            sectionId = $section.data('sectionid');
                         }
 
                         // A bit unsafe to extract the course ID from the body but it's the best option we got at the moment
@@ -1255,7 +1265,7 @@ define(['jquery', 'core/modal_factory', 'core/modal_events'], function($, ModalF
                         });
                     }
 
-                    $("body.editing .course-content li.section").each(function() {
+                    $("body .course-content li.section").each(function() {
                         add_section_backup_control($(this));
                     });
                 };

@@ -157,3 +157,10 @@
         transform: rotate(0deg);
     }
 }
+body:not(.editing) .add-to-sharing-cart {
+    text-indent: initial;
+    padding-left: 1em;
+}
+body:not(.editing) .contentwithoutlink  .add-to-sharing-cart {
+    float: right;
+}
