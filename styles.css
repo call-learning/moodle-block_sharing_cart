@@ -123,3 +123,10 @@
 .editing.format-grid .course-content h3.sectionname .add-to-sharing-cart {
     padding-top: 15px;
 }
+body:not(.editing) .add-to-sharing-cart {
+    text-indent: initial;
+    padding-left: 1em;
+}
+body:not(.editing) .contentwithoutlink  .add-to-sharing-cart {
+    float: right;
+}
